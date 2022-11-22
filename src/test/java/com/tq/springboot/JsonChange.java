@@ -1,11 +1,15 @@
 package com.tq.springboot;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.tq.springboot.entity.StringToJsonVo;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -78,7 +82,41 @@ public class JsonChange {
         String respOptCode = (String)o2.getJSONObject("UNI_BSS_BODY").getJSONObject("CALL_LOG_REAL_TIME_SYN_RSP").get("RESP_CODE");
         System.out.println(respCode);
         System.out.println(respOptCode);
+        System.out.println("dev修改");
+
+    }
+
+    @Test
+    public void stringToJson(){
+        String s="{\"id\":\"WZXJ1253\",\"text\":\"乐清盐盆纬八路铁塔\",\"site_id\":null,\"site_name\":null}";
+        JSONObject jsonObject = JSONObject.parseObject(s);
+        System.out.println(jsonObject);
+
+        String s2="[{\"id\":\"WZXJ1253\",\"text\":\"乐清盐盆纬八路铁塔\"}]";
+        //StringToJsonVo stringToJsonVo = JSONObject.parseObject(s2, StringToJsonVo.class);
+        List<StringToJsonVo> stringToJsonVos = JSONArray.parseArray(s2, StringToJsonVo.class);
+        System.out.println(stringToJsonVos);
+
+        //jsonArray转List<pojo>
+        JSONArray array = JSONArray.parseArray(s2);
+        List<StringToJsonVo> stringToJsonVos1 = JSONArray.parseArray(array.toJSONString(), StringToJsonVo.class);
+
+        String s3 = s();
+        System.out.println(s3);
+       // List<StringToJsonVo> js3 = JSONArray.parseArray(s3, StringToJsonVo.class);
+       // System.out.println(js3);
 
 
+
+    }
+    public String s(){
+        List<StringToJsonVo> list = new ArrayList<>();
+        StringToJsonVo stringToJsonVo = new StringToJsonVo();
+        stringToJsonVo.setId("1");
+        stringToJsonVo.setText("nihao");
+        list.add(stringToJsonVo);
+        System.out.println("===>"+list);
+     //   JSONArray objects = JSONArray.parseArray(list.toString());
+        return list.toString();
     }
 }

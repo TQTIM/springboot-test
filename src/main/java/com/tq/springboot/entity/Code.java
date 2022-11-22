@@ -7,6 +7,7 @@ public class Code implements Serializable {
 
     private String code;
     private String name;
+    private String prodId;
     private List<Chirldren> chirldren;
 
     public  Code(){
@@ -15,6 +16,20 @@ public class Code implements Serializable {
     public Code(String code, String name) {
         this.code = code;
         this.name = name;
+    }
+
+    public Code(String code, String name, String prodId) {
+        this.code = code;
+        this.name = name;
+        this.prodId = prodId;
+    }
+
+    public String getProdId() {
+        return prodId;
+    }
+
+    public void setProdId(String prodId) {
+        this.prodId = prodId;
     }
 
     public String getCode() {
@@ -46,6 +61,7 @@ public class Code implements Serializable {
         return "Code{" +
                 "code='" + code + '\'' +
                 ", name='" + name + '\'' +
+                ", prodId='" + prodId + '\'' +
                 '}';
     }
 }

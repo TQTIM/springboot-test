@@ -41,5 +41,16 @@ public class SubStringTest {
         System.out.println(i);
 
     }
+    @Test
+    public void subString3() {
+        //将字符串以分隔符分割
+        String s3="产品2#产品3#产品4";
+        String[] split = s3.split("#");
+        for (String s : split) {
+            System.out.println(s);
+        }
+
+
+    }
 
 }

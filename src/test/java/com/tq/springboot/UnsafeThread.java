@@ -1,4 +1,4 @@
-/*
+package com.tq.springboot;/*
 package com.tq.springboot;
 
 import org.junit.Test;
@@ -11,14 +11,22 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 */
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * @author TQ
  * @version 1.0
  * @Description
  * @create 2021-12-14 11:05
- *//*
+ */
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class UnsafeThread {
 
@@ -63,4 +71,3 @@ public class UnsafeThread {
     }
 
 }
-*/
