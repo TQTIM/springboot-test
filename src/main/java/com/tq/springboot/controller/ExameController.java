@@ -78,7 +78,7 @@ public class ExameController {
     public void deleteIds(@RequestBody Integer[] ids){
         List<Integer> list = Arrays.asList(ids);
         exameService.removeByIds(list);
-
+        System.out.println("推送测试");
     }
 
 }
