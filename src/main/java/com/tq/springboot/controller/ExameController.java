@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapp
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tq.springboot.entity.ExaminationInfo;
 import com.tq.springboot.service.ExameService;
+import com.tq.springboot.utils.Base64FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -79,6 +80,21 @@ public class ExameController {
         List<Integer> list = Arrays.asList(ids);
         exameService.removeByIds(list);
         System.out.println("推送测试");
+    }
+
+    @PostMapping("/encryption")
+    public void encryption(@RequestBody ExaminationInfo examinationInfo) throws Exception {
+        //查询数据库数据
+        List<ExaminationInfo> list = exameService.selectExameList();
+
+        //base64加密
+        String filePath ="C:\\Users\\TQ\\Desktop\\测试文件.xlsx";
+        String baseFileStr = Base64FileUtil.getFileStr(filePath);
+        System.out.println(baseFileStr);
+
+        String targetPath ="C:\\Users\\TQ\\Desktop\\测试文件2.xlsx";
+        Base64FileUtil.generateFile(baseFileStr,targetPath);
+
     }
 
 }

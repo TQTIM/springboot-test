@@ -1,5 +1,6 @@
 package com.tq.springboot;
 
+import com.tq.springboot.utils.DateUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -63,4 +64,77 @@ public class CalenderTest {
         System.out.println(newTime);
 
     }
+
+    @Test
+    public void isBetweenMonthTest(){
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.set(2022, 7,1);
+        Date date = calendar1.getTime();
+        DateUtils.isBetweenMonth(date,-3);
+
+    }
+
+    // 获取今年第一天
+    @Test
+    public void firstDayOfYear(){
+        Calendar currCal=Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        calendar.set(Calendar.YEAR,currCal.get(Calendar.YEAR));
+        Date time = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String firstday =  format.format(time);
+        System.out.println(firstday);
+
+        String nowDay = format.format(new Date());
+        System.out.println(nowDay);
+        System.out.println(firstday.equals(nowDay));
+    }
+
+    //日期之前之后
+    @Test
+    public void dateTest() throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Date birthday = sdf.parse("19940304");
+        if(birthday.after(new Date()) ){
+            System.out.println("之后");
+        }else {
+            System.out.println("之前");
+        }
+
+    }
+
+    //2月平年闰年
+    @Test
+    public void calenderFeb() throws ParseException {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Date birthday = sdf.parse("20080229");
+
+        Calendar birthdayCdr = DateUtils.toCalendar(birthday);
+        if (birthdayCdr.get(Calendar.MONTH) == 1 && birthdayCdr.get(Calendar.DAY_OF_MONTH) == 29) {
+            Calendar nowCdr = Calendar.getInstance();
+            int year = nowCdr.get(Calendar.YEAR);
+
+            nowCdr.clear();
+            nowCdr.set(year, 1, 28);
+            nowCdr.add(Calendar.DAY_OF_MONTH, 1);
+            //判断，如果月份进一，说明有28天，如果没进说明有29天，闰年
+            if (nowCdr.get(Calendar.MONTH) == 2) {
+                //平年，不生成2月29号生日
+                System.out.println("平年");
+            }
+
+        }
+
+
+//
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.setTime(birthday);
+        Calendar calendar2 = Calendar.getInstance();
+        if(calendar1.get(Calendar.MONTH) == calendar2.get(Calendar.MONTH)){
+            System.out.println("月份一致");
+        }
+    }
+
 }
