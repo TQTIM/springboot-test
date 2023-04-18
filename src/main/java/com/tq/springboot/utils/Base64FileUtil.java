@@ -31,12 +31,12 @@ public class Base64FileUtil {
             in.read(data);
             in.close();
         } catch (IOException e) {
-            logger.warn("文件转化成base64字符串:{}",e);
+            logger.warn("文件转化成base64字符串出现异常:{}",e);
         } finally {
             try {
                 in.close();
             } catch (IOException e) {
-                logger.warn("文件转化成base64字符串:{}",e);
+                logger.warn("文件转化成base64字符串出现异常:{}",e);
             }
         }
         // 对字节数组Base64编码
@@ -56,7 +56,7 @@ public class Base64FileUtil {
     public static boolean generateFile(String base64FileStr, String filePath) throws Exception {
         // 数据为空
         if (base64FileStr == null) {
-            System.out.println("字符串为空！ ");
+            System.out.println("传入的字符串为空！ ");
             return false;
         }
         BASE64Decoder decoder = new BASE64Decoder();
@@ -80,7 +80,7 @@ public class Base64FileUtil {
                 out.write(buff, 0, len);
             }
         } catch (IOException e) {
-            logger.warn("文件转化成base64字符串:{}",e);
+            logger.warn("base64字符串转化成文件出现异常:{}",e);
         } finally {
             out.flush();
             out.close();
