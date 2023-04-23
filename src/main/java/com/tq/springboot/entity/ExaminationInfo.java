@@ -1,5 +1,7 @@
 package com.tq.springboot.entity;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -20,9 +22,13 @@ import java.util.Date;
 @Data
 public class ExaminationInfo {
     @TableId(type = IdType.AUTO)
+    @ExcelProperty(value = "主键id", index = 0)
     private Integer id;
+    @ExcelProperty(value = "试卷id", index = 1)
     private Integer examId;
+    @ExcelProperty(value = "试卷类型", index = 2)
     private String tag;
+    @ExcelIgnore
     private String difficulty;
     private Integer duration;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

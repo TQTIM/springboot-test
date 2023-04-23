@@ -7,17 +7,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tq.springboot.entity.ExaminationInfo;
 import com.tq.springboot.mapper.ExameMapper;
 import com.tq.springboot.service.ExameService;
-import com.tq.springboot.utils.AESUtil;
+import com.tq.springboot.utils.AesUtils;
 import com.tq.springboot.utils.Base64FileUtil;
 import com.tq.springboot.utils.HttpClientUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.misc.BASE64Encoder;
 
 import java.io.*;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 /**
@@ -34,7 +30,7 @@ public class ExameServiceImpl extends ServiceImpl<ExameMapper,ExaminationInfo> i
     public List<ExaminationInfo> selectExameList() {
         List<ExaminationInfo> list = exameMapper.selectExameList();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ExcelWriter writer = EasyExcel.write(outputStream).build();
+        ExcelWriter writer = EasyExcel.write(outputStream,ExaminationInfo.class).build();
         WriteSheet sheet = EasyExcel.writerSheet(0).build();
         writer.write(list, sheet);
         writer.finish();
@@ -49,7 +45,7 @@ public class ExameServiceImpl extends ServiceImpl<ExameMapper,ExaminationInfo> i
             //System.out.println(baseFileStr);
 
             //aes加密
-            encryptStr = AESUtil.encrypt(baseFileStr);
+            encryptStr = AesUtils.encrypt(baseFileStr);
             //System.out.println(encryptStr);
 
             //http调用

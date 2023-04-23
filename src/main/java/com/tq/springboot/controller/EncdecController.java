@@ -1,16 +1,10 @@
 package com.tq.springboot.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.tq.springboot.service.EncdecService;
-import com.tq.springboot.utils.AESUtil;
-import com.tq.springboot.utils.Base64FileUtil;
-import com.tq.springboot.utils.HttpClientUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * @Auther: tq

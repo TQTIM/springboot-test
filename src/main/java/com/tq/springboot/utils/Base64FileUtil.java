@@ -89,10 +89,20 @@ public class Base64FileUtil {
         return true;
     }
 
+    /**
+     * 字节数组转成base64
+     * @param bytes 字节数组
+     * @return base64串
+     */
     public static String encode(byte[] bytes) {
         return Base64.getEncoder().encodeToString(bytes);
     }
 
+    /**
+     * base64串转字节数组
+     * @param base64Str base64串
+     * @return 字节数组
+     */
     public static byte[] decode(String base64Str) {
         return Base64.getDecoder().decode(base64Str);
     }

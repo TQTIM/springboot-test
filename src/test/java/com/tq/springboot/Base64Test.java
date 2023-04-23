@@ -2,27 +2,13 @@ package com.tq.springboot;
 
 import com.tq.springboot.service.EncdecService;
 import com.tq.springboot.utils.AESUtil;
+import com.tq.springboot.utils.AesUtils;
 import com.tq.springboot.utils.Base64FileUtil;
-import com.tq.springboot.utils.MD5Utils;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpEntity;
 
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.security.SecureRandom;
-import java.util.Base64;
 
 /**
  * @Auther: tq
@@ -52,12 +38,14 @@ public class Base64Test {
         String baseFileStr = Base64FileUtil.getFileStr(filePath);
         System.out.println(baseFileStr);
 
-        //aes加密
-        String encryptStr = AESUtil.encrypt(baseFileStr);
+        //aes加密(密钥："123456")
+        //String encryptStr = AesUtils.encrypt(baseFileStr);
+        String encryptStr = AESUtil.encrypt(baseFileStr,"123456");
         System.out.println(encryptStr);
 
         //aes解密
-        String decryptStr = AESUtil.decrypt(encryptStr);
+        //String decryptStr = AesUtils.decrypt(encryptStr);
+        String decryptStr = AESUtil.decrypt(encryptStr,"123456");
         System.out.println(decryptStr);
 
         String targetPath ="C:\\Users\\TQ\\Desktop\\测试文件2.xlsx";

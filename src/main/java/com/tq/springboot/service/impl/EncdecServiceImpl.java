@@ -2,11 +2,11 @@ package com.tq.springboot.service.impl;
 
 import com.tq.springboot.service.EncdecService;
 import com.tq.springboot.utils.AESUtil;
+import com.tq.springboot.utils.AesUtils;
 import com.tq.springboot.utils.Base64FileUtil;
 import com.tq.springboot.utils.HttpClientUtil;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
+import java.util.Random;
 
 /**
  * @Auther: tq
@@ -30,7 +30,8 @@ public class EncdecServiceImpl implements EncdecService {
             //System.out.println(baseFileStr);
 
             //aes加密
-             encryptStr = AESUtil.encrypt(baseFileStr);
+             encryptStr = AesUtils.encrypt(baseFileStr);
+             //encryptStr = AESUtil.encrypt(baseFileStr,"123456");
             //System.out.println(encryptStr);
 
             //http调用
@@ -49,11 +50,18 @@ public class EncdecServiceImpl implements EncdecService {
 
     @Override
     public void decrypt(String encStr) {
-        String targetPath ="C:\\Users\\TQ\\Desktop\\测试文件2.xlsx";
+        String targetPath ="C:\\Users\\TQ\\Desktop\\";
+        String fileName = "测试";
+        Random random = new Random();
+        for (int i = 0; i < 4; i++) {
+            fileName += (char) (random.nextInt(26) + 'a');
+        }
+        fileName += ".xlsx";
+        targetPath =targetPath +fileName;
 
         try {
             //aes解密
-            String decryptStr = AESUtil.decrypt(encStr);
+            String decryptStr = AesUtils.decrypt(encStr);
             System.out.println(decryptStr);
 
             //base64转文件
