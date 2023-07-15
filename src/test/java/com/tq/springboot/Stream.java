@@ -214,4 +214,72 @@ public class Stream {
         ss2.forEach(System.out::println);
 
     }
+
+    /**
+     *  组织层级找最大的
+     */
+    @Test
+    public void min(){
+        List<String> list = new ArrayList<>();
+        list.add("/1/22/333");
+        list.add("/1/22");
+        list.add("/1/22/33/44");
+       // list.add("/1/33");
+        list.add("/1/33/55");
+
+        String shortest = Collections.min(list, Comparator.comparing(s -> s.split("/").length));
+        int minLevel = shortest.split("/").length;
+
+        List<String> result = new ArrayList<>();
+        for (String s : list) {
+            if (s.split("/").length == minLevel) {
+                result.add(s);
+            }
+        }
+
+        System.out.println(result);
+    }
+
+    @Test
+    public void min2(){
+        List<String> list = new ArrayList<>();
+        list.add("/1/22/333");
+        list.add("/1/22");
+        list.add("/1/22/33/44");
+        list.add("/1/33/55");
+        list.add("/1/33/55/66");
+        list.add("/2/22/333");
+        list.add("/2/22");
+        list.add("/2/22/33/44");
+        list.add("/2/33/55");
+        list.add("/2/33/55/66");
+
+        Map<String, List<String>> map = new HashMap<>();
+        for (String s : list) {
+            String[] arr = s.split("/");
+            if (arr.length >= 3) {
+                String key = arr[1];
+                String value = arr[2];
+                if (value.equals("22") || value.equals("33")) {
+                    if (!map.containsKey(key)) {
+                        map.put(key, new ArrayList<>());
+                    }
+                    map.get(key).add(s);
+                }
+            }
+        }
+
+        List<String> result = new ArrayList<>();
+        for (List<String> l : map.values()) {
+            String min = l.get(0);
+            for (String s : l) {
+                if (s.split("/").length < min.split("/").length) {
+                    min = s;
+                }
+            }
+            result.add(min);
+        }
+
+        System.out.println(result);
+    }
 }
