@@ -1,5 +1,6 @@
 package com.tq.springboot;
 
+import com.tq.springboot.entity.Code;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

@@ -49,8 +49,18 @@ public class SubStringTest {
         for (String s : split) {
             System.out.println(s);
         }
+    }
 
-
+    //字符串包含某个字符串
+    @Test
+    public void contains(){
+        String s ="kw_work_order_999_577";
+        boolean b = s.contains("kw_work_order");
+        boolean b2 = s.contains("kw_work_order_999");
+        System.out.println(b+"==="+b2);
+        if(!b || b2){
+            System.out.println("需要被排除!!!");
+        }
     }
 
 }

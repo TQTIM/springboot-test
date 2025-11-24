@@ -8,7 +8,7 @@ public class Code implements Serializable {
     private String code;
     private String name;
     private String prodId;
-  //  private List<Chirldren> chirldren;
+//    private List<Chirldren> chirldren;
 
     public  Code(){
 
@@ -40,10 +40,13 @@ public class Code implements Serializable {
         return name;
     }
 
-    /*public List<Chirldren> getChirldren() {
+  /*  public List<Chirldren> getChirldren() {
         return chirldren;
     }
-*/
+    public void setChirldrens(List<Chirldren> chirldren) {
+        this.chirldren = chirldren;
+    }*/
+
     public void setCode(String code) {
         this.code = code;
     }
@@ -52,9 +55,6 @@ public class Code implements Serializable {
         this.name = name;
     }
 
-   /* public void setChirldrens(List<Chirldren> chirldren) {
-        this.chirldren = chirldren;
-    }*/
 
     @Override
     public String toString() {
