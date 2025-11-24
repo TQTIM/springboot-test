@@ -1,4 +1,4 @@
-package com.tq.springboot;/*
+package com.tq.springboot.juc;/*
 package com.tq.springboot;
 
 import org.junit.Test;
@@ -14,7 +14,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.List;

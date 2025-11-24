@@ -4,6 +4,7 @@ import com.tq.springboot.entity.Code;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -281,5 +282,12 @@ public class Stream {
         }
 
         System.out.println(result);
+    }
+
+    @Test
+    public  void functionTest(){
+        Consumer<String> consumer = (str)->{System.out.println(str);};
+        consumer.accept("sdadasd");
+
     }
 }
