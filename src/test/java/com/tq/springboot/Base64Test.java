@@ -1,23 +1,14 @@
 package com.tq.springboot;
 
+import com.tq.springboot.service.EncdecService;
 import com.tq.springboot.utils.AESUtil;
+import com.tq.springboot.utils.AesUtils;
 import com.tq.springboot.utils.Base64FileUtil;
-import com.tq.springboot.utils.MD5Utils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpEntity;
 
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.security.SecureRandom;
-import java.util.Base64;
 
 /**
  * @Auther: tq
@@ -27,12 +18,14 @@ import java.util.Base64;
  */
 @SpringBootTest
 public class Base64Test {
+    @Autowired
+    private EncdecService encdecService;
+
     @Test
     public void fileToBase64() throws IOException {
         // ---------------加密文件---------------
         String filePath ="C:\\Users\\TQ\\Desktop\\测试文件.xlsx";
         String baseFileStr = Base64FileUtil.getFileStr(filePath);
-        System.out.println(baseFileStr);
 
         System.out.println("加密文件: "+baseFileStr);
 
@@ -41,22 +34,31 @@ public class Base64Test {
     @Test
     public void base64ToFile() throws Exception {
         //文件转base64
-        String filePath ="C:\\Users\\TQ\\Desktop\\唐武斌-简历.docx";
+        String filePath ="C:\\Users\\TQ\\Desktop\\测试文件.xlsx";
         String baseFileStr = Base64FileUtil.getFileStr(filePath);
         System.out.println(baseFileStr);
 
-        //aes加密
-        String encryptStr = AESUtil.encrypt(baseFileStr);
+        //aes加密(密钥："123456")
+        //String encryptStr = AesUtils.encrypt(baseFileStr);
+        String encryptStr = AESUtil.encrypt(baseFileStr,"123456");
         System.out.println(encryptStr);
 
         //aes解密
-        String decryptStr = AESUtil.decrypt(encryptStr);
+        //String decryptStr = AesUtils.decrypt(encryptStr);
+        String decryptStr = AESUtil.decrypt(encryptStr,"123456");
         System.out.println(decryptStr);
 
-        String targetPath ="C:\\Users\\TQ\\Desktop\\唐武斌-简历2.docx";
+        String targetPath ="C:\\Users\\TQ\\Desktop\\测试文件2.xlsx";
+        //base64转文件
         Base64FileUtil.generateFile(decryptStr,targetPath);
     }
 
+    @Test
+    public void encdecTest(){
+        String encryptStr = encdecService.encrypt("测试");
+       // encdecService.decrypt(encryptStr);
+    }
+    /*
     @Test
     //整体过程
     public void base64Test() throws Exception {
@@ -87,13 +89,13 @@ public class Base64Test {
         String encryptedString = Base64.getEncoder().encodeToString(encryptedBytes);
 
         // http调用第三方接口
-       /* CloseableHttpClient httpClient = HttpClients.createDefault();
+       CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);
         httpPost.setHeader("Content-Type", "application/json");
         httpPost.setEntity(new StringEntity("{\"data\":\"" + encryptedString + "\"}"));
         CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
         HttpEntity responseEntity = httpResponse.getEntity();
         String responseString = new String(responseEntity.getContent().readAllBytes(), StandardCharsets.UTF_8);
-        System.out.println(responseString);*/
-    }
+        System.out.println(responseString);
+    } */
 }
