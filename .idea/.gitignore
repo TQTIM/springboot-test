@@ -1,0 +1,52 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+
+# ====== IDE相关 ======
+*.iws
+*.iml
+*.ipr
+.idea/
+*.swp
+*.swo
+*~
+~$*
+.DS_Store
+Thumbs.db
+
+# ====== 编译构建输出 ======
+target/
+build/
+out/
+bin/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+# ====== 依赖管理 ======
+.mvn/
+mvnw*
+gradle/
+gradlew
+
+# ====== 日志文件 ======
+*.log
+logs/
+*.log.*
+*.log.gz
+log/
+*.log.*
+*.pid
+
+# ====== 临时文件 ======
+tmp/
+temp/
+*.tmp
+*.temp
