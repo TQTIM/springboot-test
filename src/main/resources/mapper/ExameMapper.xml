@@ -5,4 +5,12 @@
     <select id="selectExameList" resultType="com.tq.springboot.entity.ExaminationInfo">
         select id,exam_id,tag from examination_info
     </select>
+
+    <select id="selectDataRecord" resultType="com.tq.springboot.entity.DataRecord">
+        select * from data_record where
+          <![CDATA[
+            create_time >= #{startTime}
+        AND create_time < #{endTime}
+        ]]>
+    </select>
 </mapper>

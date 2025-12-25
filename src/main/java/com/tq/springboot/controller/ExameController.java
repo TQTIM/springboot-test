@@ -3,17 +3,17 @@ package com.tq.springboot.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tq.springboot.entity.DataRecord;
 import com.tq.springboot.entity.ExaminationInfo;
 import com.tq.springboot.service.ExameService;
 import com.tq.springboot.utils.Base64FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
@@ -95,6 +95,14 @@ public class ExameController {
         String targetPath ="C:\\Users\\TQ\\Desktop\\测试文件2.xlsx";
         Base64FileUtil.generateFile(baseFileStr,targetPath);
 
+    }
+
+    /** 线程池方式拆分查询报表*/
+    @GetMapping("/exame/selectDataReport")
+    public List<DataRecord> selectDataReport(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate){
+        List<DataRecord> list = exameService.selectDataRecord(startDate, endDate);
+        return list;
     }
 
 }

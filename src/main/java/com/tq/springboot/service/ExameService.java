@@ -1,8 +1,10 @@
 package com.tq.springboot.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.tq.springboot.entity.DataRecord;
 import com.tq.springboot.entity.ExaminationInfo;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -14,5 +16,7 @@ import java.util.List;
 public interface ExameService extends IService<ExaminationInfo> {
     List<ExaminationInfo> selectExameList();
     List<ExaminationInfo> selectExameList2();
+
+    List<DataRecord> selectDataRecord(LocalDate startDate,LocalDate endDate);
 
 }
