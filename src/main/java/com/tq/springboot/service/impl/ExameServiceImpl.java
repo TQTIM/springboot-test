@@ -4,6 +4,7 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.tq.springboot.config.ReportThreadPoolConfig;
 import com.tq.springboot.entity.DataRecord;
 import com.tq.springboot.entity.ExaminationInfo;
 import com.tq.springboot.mapper.ExameMapper;
@@ -73,6 +74,8 @@ public class ExameServiceImpl extends ServiceImpl<ExameMapper,ExaminationInfo> i
         return list;
     }
 
+    @Autowired
+    private ReportThreadPoolConfig threadPoolConfig;
     @Override
     public List<DataRecord> selectDataRecord(LocalDate startDate, LocalDate endDate) {
        // List<DataRecord> list = exameMapper.selectDataRecord();
@@ -83,11 +86,9 @@ public class ExameServiceImpl extends ServiceImpl<ExameMapper,ExaminationInfo> i
 
         // 2️⃣ 拆分月份
         List<YearMonth> months = splitByMonth(startDate, endDate);
-        //用线程池方式按月拆分报表
-        ThreadPoolExecutor executor = new ThreadPoolExecutor(3, 6, 60,
-                TimeUnit.SECONDS, new LinkedBlockingDeque<>(10), Executors.defaultThreadFactory(),
-                new ThreadPoolExecutor.AbortPolicy());
-
+        //用线程池方式按月拆分报表 (线程池创建不能New在业务代码里)
+        ThreadPoolExecutor executor = threadPoolConfig.reportExecutor();
+        //如果要改成部分月失败也返回，需要改变写法为每一个future链式调用.exceptionally(ex -> {})，错误月份记录到一个集合里
         List<CompletableFuture<List<DataRecord>>> futures  = months.stream().map(month -> {
             CompletableFuture<List<DataRecord>> future = CompletableFuture.supplyAsync(() -> {
                 System.out.println(Thread.currentThread().getName() + "查询月份开始" + month);
@@ -104,21 +105,18 @@ public class ExameServiceImpl extends ServiceImpl<ExameMapper,ExaminationInfo> i
         // 4️⃣ 等待所有月份查询完成并收集结果
         CompletableFuture<Void> allDown = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
         // 5️⃣ 合并结果 (其实可以和第四步链式写一起)
-        CompletableFuture<List<List<DataRecord>>> allResults = allDown.thenApply(e -> futures.stream().map(CompletableFuture::join)
+        CompletableFuture<List<List<DataRecord>>> allResults = allDown.thenApply(
+                e -> futures.stream().map(CompletableFuture::join)//join如果某个月异常，立即抛出异常，allResults 进入 exceptional状态本身已经是失败态
                 .collect(Collectors.toList()));
-
         // 获取最终结果
         List<DataRecord> resultList = new ArrayList<>();
-        try {
-            List<List<DataRecord>> results = allResults.get();
+        // ❗ fail-fast：直接 join，不吞异常
+            List<List<DataRecord>> results = allResults.join(); //取值如果用get()会需要处理异常，假如try catch处理异常失败数据只有日志打印完全不知道“哪个月失败”
             // 处理结果.扁平化合成想要的汇总返回
             resultList = results.stream()
                     .flatMap(List::stream) //List<DataRecord>
                     .collect(Collectors.toList());
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
 
         return resultList;
