@@ -11,6 +11,7 @@ import com.tq.springboot.mapper.ExameMapper;
 import com.tq.springboot.service.ExameService;
 import com.tq.springboot.utils.AesUtils;
 import com.tq.springboot.utils.Base64FileUtil;
+import com.tq.springboot.utils.FutureUtil;
 import com.tq.springboot.utils.HttpClientUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -88,19 +91,61 @@ public class ExameServiceImpl extends ServiceImpl<ExameMapper,ExaminationInfo> i
         List<YearMonth> months = splitByMonth(startDate, endDate);
         //用线程池方式按月拆分报表 (线程池创建不能New在业务代码里)
         ThreadPoolExecutor executor = threadPoolConfig.reportExecutor();
-        //如果要改成部分月失败也返回，需要改变写法为每一个future链式调用.exceptionally(ex -> {})，错误月份记录到一个集合里
-        List<CompletableFuture<List<DataRecord>>> futures  = months.stream().map(month -> {
-            CompletableFuture<List<DataRecord>> future = CompletableFuture.supplyAsync(() -> {
-                System.out.println(Thread.currentThread().getName() + "查询月份开始" + month);
-                LocalDateTime monthStart =
-                        month.atDay(1).atStartOfDay();
-                LocalDateTime monthEnd =
-                        month.plusMonths(1).atDay(1).atStartOfDay();
-                return exameMapper.selectDataRecord(monthStart, monthEnd);
-            }, executor);
-            return future; //这里可简写直接返回也行，()-> CompletableFuture.supplyAsync(...) 或者month -> {return CompletableFuture.supplyAsync(...);}
-        }).collect(Collectors.toList());
+        //如果要改成部分月失败也返回，需要改变写法为每一个future链式调用.exceptionally(ex -> {})，错误月份信息可以将结果返回个包装类
+        List<CompletableFuture<List<DataRecord>>> futures  = months.stream()
+                .map(month -> {
+                    CompletableFuture<List<DataRecord>> future = CompletableFuture.supplyAsync(() -> {
+                    System.out.println(Thread.currentThread().getName() + "查询月份开始" + month);
+                    LocalDateTime monthStart =
+                            month.atDay(1).atStartOfDay();
+                    LocalDateTime monthEnd =
+                            month.plusMonths(1).atDay(1).atStartOfDay();
+                    int i = 1/0;
+                    return exameMapper.selectDataRecord(monthStart, monthEnd);
+                }, executor)//.orTimeout(3, TimeUnit.SECONDS) java9才提供 超时控制。java8可以用ScheduledExecutorService + applyToEither方式
+                        .exceptionally(ex -> {
+                            // ⭐ 这里处理“异常月份”
+                            System.out.println("查询失败的月份："+ex);
+                            return Collections.emptyList(); // 或 null / 特殊标记
+                        });
+                return future; //这里可简写直接返回也行，()-> CompletableFuture.supplyAsync(...) 或者month -> {return CompletableFuture.supplyAsync(...);}
+            }).collect(Collectors.toList());
 
+        //超时控制版本----
+/*        List<CompletableFuture<List<DataRecord>>> futures =
+                months.stream()
+                        .map(month -> {
+                            // ① 真正的查询任务
+                            CompletableFuture<List<DataRecord>> queryFuture =
+                                    CompletableFuture.supplyAsync(() -> {
+
+                                        System.out.println(
+                                                Thread.currentThread().getName()
+                                                        + " 查询月份开始 " + month
+                                        );
+
+                                        LocalDateTime monthStart =
+                                                month.atDay(1).atStartOfDay();
+                                        LocalDateTime monthEnd =
+                                                month.plusMonths(1).atDay(1).atStartOfDay();
+
+                                        int i = 1 / 0; // 模拟异常
+                                        return exameMapper.selectDataRecord(monthStart, monthEnd);
+
+                                    }, executor);
+
+                            // ② 包一层“Java8 超时控制”
+                            CompletableFuture<List<DataRecord>> withTimeout =
+                                    withTimeout(queryFuture, 3, TimeUnit.SECONDS, scheduler);//scheduler要用一个“独立的 ScheduledExecutorService new个新的线程池用于超时
+
+                            // ③ 吃掉异常，保证“单月失败不影响整体”
+                            return withTimeout.exceptionally(ex -> {
+                                System.out.println("查询失败的月份：" + month + ", ex=" + ex);
+                                return Collections.emptyList();
+                            });
+
+                        })
+                        .collect(Collectors.toList());*/
 
         // 4️⃣ 等待所有月份查询完成并收集结果
         CompletableFuture<Void> allDown = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));

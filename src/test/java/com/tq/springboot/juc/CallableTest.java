@@ -1,4 +1,4 @@
-package com.tq.springboot.utils;
+package com.tq.springboot.juc;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,7 +11,7 @@ import java.util.concurrent.*;
  * @Description
  * @Version: 1.0
  */
-public class Test {
+public class CallableTest {
 
     public static void main (String args[]) throws ExecutionException, InterruptedException {
 
@@ -19,7 +19,7 @@ public class Test {
         map.put("m","ok");
         HashSet<Object> set = new HashSet<>();
         set.add("setall");
-        new Test().test();
+        new CallableTest().test();
 
         MyCallable myCallable = new MyCallable();
         FutureTask<String> futureTask = new FutureTask<>(myCallable);
